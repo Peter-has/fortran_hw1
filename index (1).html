@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>陳旻澤｜414210566｜得分 100/100</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --ink:#1f2933; --mute:#616e7c; --line:#d9dee4; --ok:#1a7f4b; --bad:#c0392b; --acc:#2456a6; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14171a; --card:#1d2227; --ink:#e6eaee; --mute:#9aa5b1; --line:#323a42; --ok:#4cc38a; --bad:#ff7b6b; --acc:#7aa7f0; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:system-ui,"Noto Sans TC","Microsoft JhengHei",sans-serif; line-height:1.65; }
+  .wrap { max-width:880px; margin:0 auto; padding:24px 16px 64px; }
+  header h1 { margin:0 0 4px; font-size:1.6rem; }
+  header p { margin:0; color:var(--mute); }
+  .score { display:inline-block; margin-top:12px; padding:6px 16px; border-radius:999px; background:var(--acc); color:#fff; font-weight:700; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px 18px 8px; margin-top:20px; }
+  h2 { margin:0 0 8px; font-size:1.2rem; }
+  h3 { margin:16px 0 6px; font-size:1rem; color:var(--acc); }
+  .task { color:var(--mute); margin:0 0 8px; }
+  pre { background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px; overflow-x:auto; font-size:.88rem; line-height:1.5; }
+  code { font-family:Consolas,"Courier New",monospace; }
+  table { border-collapse:collapse; width:100%; margin:8px 0 12px; font-size:.92rem; }
+  th, td { border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+  th { background:var(--bg); }
+  .tag { font-size:.8rem; padding:1px 8px; border-radius:999px; border:1px solid var(--ok); color:var(--ok); margin-left:6px; }
+  fieldset { border:1px solid var(--line); border-radius:8px; margin:12px 0; padding:8px 12px 12px; }
+  legend { font-weight:700; padding:0 6px; }
+  label { display:inline-block; margin:6px 12px 0 0; font-size:.9rem; }
+  input { padding:5px 8px; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--ink); font:inherit; }
+  input[type=number] { width:110px; }
+  input.url { width:min(100%,420px); }
+  button { margin-top:8px; padding:8px 20px; border:0; border-radius:8px; background:var(--acc); color:#fff; font:inherit; font-weight:700; cursor:pointer; }
+  button.alt { background:var(--mute); margin-left:8px; }
+  .res { margin:12px 0; }
+  .ok { color:var(--ok); } .bad { color:var(--bad); }
+  a { color:var(--acc); }
+  footer { margin-top:28px; color:var(--mute); font-size:.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>陳旻澤｜414210566｜得分 <span id="titleScore">100</span>/100</h1>
+  <p>座號 40　數值方法課程作業：以 AI 協助開發 Fortran「1 加到 N」程式</p>
+  <span class="score">評分系統判定總分：<span id="topScore">100</span> / 100</span>
+</header>
+
+<section id="q1">
+  <h2>第一題（20 分）<span class="tag">完成</span></h2>
+  <p class="task">指揮 AI 輸出一個能做 1 加到 N 的 Fortran 程式並完成編譯，確認可以成功執行計算並輸出結果。</p>
+  <h3>環境</h3>
+  <p>GNU Fortran (Rev4, Built by MSYS2 project) 16.2.0；以 <code>winget install --id MSYS2.MSYS2 -e</code> 安裝 MSYS2，再用 <code>pacman -S mingw-w64-ucrt-x86_64-gcc-fortran</code> 安裝 gfortran。</p>
+  <h3>程式碼（sum.f90 原版）</h3>
+<pre><code>program sum_to_n
+    implicit none
+    integer :: n, i, total
+
+    print *, "Enter a positive integer N:"
+    read *, n
+
+    if (n &lt; 1) then
+        print *, "Error: N must be a positive integer"
+        stop
+    end if
+
+    total = 0
+    do i = 1, n
+        total = total + i
+    end do
+
+    print *, "Sum of 1 + 2 + ... + N =", total
+end program sum_to_n</code></pre>
+  <h3>編譯與執行</h3>
+<pre><code>gfortran sum.f90 -o sum.exe
+.\sum.exe
+Enter a positive integer N:
+10
+ Sum of 1 + 2 + ... + N =          55</code></pre>
+  <p>N=10 輸出 55，與公式 10×11÷2 = 55 相符。</p>
+  <h3>遇到的問題與解決</h3>
+  <ul>
+    <li>編譯結束代碼為 1 且無錯誤訊息。用 <code>-v</code> 追查，單獨執行 <code>f951.exe</code> 得到 <code>-1073741511</code>（0xC0000139，找不到 DLL 進入點）。</li>
+    <li>原因：PATH 中 Anaconda 的 <code>libgmp</code>、<code>libgcc_s</code>、<code>libstdc++</code>、<code>libwinpthread</code> 與 MSYS2 同名且排在前面。</li>
+    <li>解決：將 <code>C:\msys64\ucrt64\bin</code> 移到使用者 PATH 最前面，新開 PowerShell 後編譯成功（結束代碼 0）。</li>
+    <li>中文提示在終端機顯示亂碼，改用英文提示。</li>
+  </ul>
+</section>
+
+<section id="q2">
+  <h2>第二題（20 分）<span class="tag">完成</span></h2>
+  <p class="task">指揮 AI 執行該程式進行三次隨機的驗證，以確定該程式功能的正確性。</p>
+  <table>
+    <tr><th>次數</th><th>輸入 N</th><th>程式輸出</th><th>公式 N(N+1)/2</th><th>結果</th></tr>
+    <tr><td>1</td><td>37</td><td>703</td><td>37×38÷2 = 703</td><td class="ok">通過</td></tr>
+    <tr><td>2</td><td>250</td><td>31375</td><td>250×251÷2 = 31375</td><td class="ok">通過</td></tr>
+    <tr><td>3</td><td>1999</td><td>1999000</td><td>1999×2000÷2 = 1999000</td><td class="ok">通過</td></tr>
+  </table>
+  <h3>三次實際執行紀錄（PowerShell，資料夾 fortran_hw1）</h3>
+<pre><code>PS C:\Users\User\fortran_hw1&gt; .\sum.exe      (第 1 次，輸入 N = 37)
+ Sum of 1 + 2 + ... + N =         703
+
+PS C:\Users\User\fortran_hw1&gt; .\sum.exe      (第 2 次，輸入 N = 250)
+ Sum of 1 + 2 + ... + N =       31375
+
+PS C:\Users\User\fortran_hw1&gt; .\sum.exe      (第 3 次，輸入 N = 1999)
+ Sum of 1 + 2 + ... + N =     1999000</code></pre>
+  <p>三次的 N 由 AI 事先挑選（37、250、1999，大小不同），我在自己的電腦上執行並把畫面輸出回報，每一次都與公式 N(N+1)/2 的結果一致。連同第一題的 N=10（55）與 N=100（5050），共 5 組測資全部正確。</p>
+</section>
+
+<section id="q3">
+  <h2>第三題（20 分）<span class="tag">完成</span></h2>
+  <p class="task">針對所開發的程式進行 Git 版本控制，將原版 commit，之後指揮 AI 逐行註解並編譯驗證成功後，再次 commit 為新版。</p>
+<pre><code>git init
+Set-Content -Path .gitignore -Value "*.exe","*.o","*.mod" -Encoding ascii
+git add sum.f90 .gitignore
+git commit -m "Initial version: sum 1 to N with DO loop"
+[master (root-commit) 6a60864] ...
+
+(加入逐行英文註解後，git diff --stat：sum.f90 | 14 ++++++++++++++)
+gfortran sum.f90 -o sum.exe     -> 結束代碼 0
+.\sum.exe  輸入 10               -> Sum of 1 + 2 + ... + N = 55
+git add sum.f90
+git commit -m "Add line-by-line comments to sum.f90"
+[master d8a86cd] ...
+
+git log --oneline
+d8a86cd (HEAD -&gt; master) Add line-by-line comments to sum.f90
+6a60864 Initial version: sum 1 to N with DO loop</code></pre>
+  <h3>逐行註解版（節錄）</h3>
+<pre><code>! Program: sum_to_n
+! Purpose: Read a positive integer N and compute 1 + 2 + ... + N
+program sum_to_n
+    ! Require every variable to be declared explicitly
+    implicit none
+    ! n: upper limit entered by the user; i: loop counter; total: running sum
+    integer :: n, i, total
+    ...
+    ! Initialize the running sum to zero before accumulating
+    total = 0
+    ! Loop i from 1 to N, one step at a time
+    do i = 1, n
+        ! Add the current value of i to the running sum
+        total = total + i
+    end do
+    ...</code></pre>
+  <p>註解版編譯成功且 N=10 仍得 55，邏輯未受影響。<code>.gitignore</code> 排除了 <code>*.exe</code> 等編譯產物。</p>
+</section>
+
+<section id="q4">
+  <h2>第四題（20 分）<span class="tag">完成</span></h2>
+  <p class="task">將本地端已經進行版本控制的程式碼，傳送到 GitHub 做雲端儲存。</p>
+<pre><code>git remote add origin https://github.com/Peter-has/fortran_hw1.git
+git branch -M main
+git push -u origin main
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.</code></pre>
+  <p>GitHub 儲存庫：<a href="https://github.com/Peter-has/fortran_hw1" target="_blank" rel="noopener">https://github.com/Peter-has/fortran_hw1</a>（Public，分支 main，含 sum.f90 與 .gitignore，共 2 筆 commit：d8a86cd、6a60864，語言統計 Fortran 100%）。</p>
+</section>
+
+<section id="q5">
+  <h2>第五題（20 分）<span class="tag">完成</span></h2>
+  <p class="task">要求 AI 做一個任務達成評分系統，允許輸入前四題的結果，達標就給分。</p>
+  <h3>評分標準</h3>
+  <table>
+    <tr><th>題</th><th>達標條件</th><th>配分</th></tr>
+    <tr><td>一</td><td>編譯結束代碼為 0（10 分）；N=10 的輸出等於 55（10 分）</td><td>20</td></tr>
+    <tr><td>二</td><td>三組 N 的程式輸出皆等於 N(N+1)/2，每組約 6.67 分，全對 20 分</td><td>20</td></tr>
+    <tr><td>三</td><td>commit 數至少 2（10 分）；註解版編譯結束代碼 0 且 N=10 輸出 55（10 分）</td><td>20</td></tr>
+    <tr><td>四</td><td>GitHub 網址格式正確（10 分）；遠端 commit 數至少 2（10 分）</td><td>20</td></tr>
+    <tr><td>五</td><td>前四題的結果欄位都已輸入並成功判分（每題 5 分）</td><td>20</td></tr>
+  </table>
+
+  <h3>評分系統（可操作，已預填我的實際結果，也可改數字自行測試）</h3>
+  <form id="grader" onsubmit="return false;">
+    <fieldset><legend>第一題</legend>
+      <label>編譯結束代碼 <input type="number" id="q1exit" value="0"></label>
+      <label>N=10 的程式輸出 <input type="number" id="q1out" value="55"></label>
+    </fieldset>
+    <fieldset><legend>第二題（三組隨機驗證）</legend>
+      <label>N₁ <input type="number" id="n1" value="37"> 輸出 <input type="number" id="o1" value="703"></label><br>
+      <label>N₂ <input type="number" id="n2" value="250"> 輸出 <input type="number" id="o2" value="31375"></label><br>
+      <label>N₃ <input type="number" id="n3" value="1999"> 輸出 <input type="number" id="o3" value="1999000"></label>
+    </fieldset>
+    <fieldset><legend>第三題</legend>
+      <label>commit 數 <input type="number" id="q3c" value="2"></label>
+      <label>註解版編譯結束代碼 <input type="number" id="q3exit" value="0"></label>
+      <label>註解版 N=10 輸出 <input type="number" id="q3out" value="55"></label>
+    </fieldset>
+    <fieldset><legend>第四題</legend>
+      <label>GitHub 儲存庫網址<br><input class="url" type="text" id="q4url" value="https://github.com/Peter-has/fortran_hw1"></label><br>
+      <label>遠端 commit 數 <input type="number" id="q4c" value="2"></label>
+    </fieldset>
+    <button type="button" id="go">計算得分</button>
+    <button type="button" class="alt" id="reset">還原我的實際結果</button>
+  </form>
+  <div class="res" id="result" aria-live="polite"></div>
+</section>
+
+<footer>陳旻澤　學號 414210566　座號 40　｜　開發工具：gfortran 16.2.0、Git 2.56.0、GitHub</footer>
+</div>
+
+<script>
+(function () {
+  var defaults = {};
+  var ids = ["q1exit","q1out","n1","o1","n2","o2","n3","o3","q3c","q3exit","q3out","q4url","q4c"];
+  ids.forEach(function (id) { defaults[id] = document.getElementById(id).value; });
+
+  function val(id) { return document.getElementById(id).value.trim(); }
+  function num(id) { var v = val(id); return v === "" ? NaN : Number(v); }
+  function filled(list) { return list.every(function (id) { return val(id) !== ""; }); }
+  function expected(n) { return n * (n + 1) / 2; }
+
+  function grade() {
+    var lines = [], total = 0;
+
+    var q1 = 0;
+    if (num("q1exit") === 0) q1 += 10;
+    if (num("q1out") === expected(10)) q1 += 10;
+    lines.push(["一", q1, "編譯結束代碼 " + val("q1exit") + "（需為 0）；N=10 輸出 " + val("q1out") + "（應為 55）"]);
+
+    var ok2 = 0, detail2 = [];
+    [["n1","o1"],["n2","o2"],["n3","o3"]].forEach(function (p) {
+      var n = num(p[0]), o = num(p[1]);
+      var good = Number.isInteger(n) && n >= 1 && o === expected(n);
+      if (good) ok2++;
+      detail2.push("N=" + val(p[0]) + (good ? " ✓" : " ✗（應為 " + (n >= 1 ? expected(n) : "—") + "）"));
+    });
+    var q2 = Math.round(20 * ok2 / 3);
+    lines.push(["二", q2, detail2.join("；")]);
+
+    var q3 = 0;
+    if (num("q3c") >= 2) q3 += 10;
+    if (num("q3exit") === 0 && num("q3out") === 55) q3 += 10;
+    lines.push(["三", q3, "commit 數 " + val("q3c") + "（需 ≥ 2）；註解版編譯代碼 " + val("q3exit") + "、輸出 " + val("q3out")]);
+
+    var q4 = 0;
+    if (/^https:\/\/github\.com\/[A-Za-z0-9-]+\/[A-Za-z0-9._-]+$/.test(val("q4url"))) q4 += 10;
+    if (num("q4c") >= 2) q4 += 10;
+    lines.push(["四", q4, "網址格式" + (q4 >= 10 && /^https:\/\/github\.com\//.test(val("q4url")) ? "正確" : "請檢查") + "；遠端 commit 數 " + val("q4c") + "（需 ≥ 2）"]);
+
+    var groups = [["q1exit","q1out"],["n1","o1","n2","o2","n3","o3"],["q3c","q3exit","q3out"],["q4url","q4c"]];
+    var q5 = 0;
+    groups.forEach(function (g) { if (filled(g)) q5 += 5; });
+    lines.push(["五", q5, "已輸入 " + (q5 / 5) + " / 4 題的結果，系統成功判分"]);
+
+    lines.forEach(function (l) { total += l[1]; });
+
+    var html = "<table><tr><th>題</th><th>得分</th><th>判定說明</th></tr>";
+    lines.forEach(function (l) {
+      html += "<tr><td>" + l[0] + "</td><td class='" + (l[1] === 20 ? "ok" : "bad") + "'>" + l[1] + " / 20</td><td>" + l[2] + "</td></tr>";
+    });
+    html += "</table><p><strong>總分：" + total + " / 100</strong></p>";
+    document.getElementById("result").innerHTML = html;
+    return total;
+  }
+
+  function showTitleScore(isDefault, total) {
+    if (isDefault) {
+      document.getElementById("titleScore").textContent = total;
+      document.getElementById("topScore").textContent = total;
+      document.title = "陳旻澤｜414210566｜得分 " + total + "/100";
+    }
+  }
+
+  function isDefaultInput() {
+    return ids.every(function (id) { return val(id) === defaults[id]; });
+  }
+
+  document.getElementById("go").addEventListener("click", function () {
+    var t = grade();
+    showTitleScore(isDefaultInput(), t);
+  });
+  document.getElementById("reset").addEventListener("click", function () {
+    ids.forEach(function (id) { document.getElementById(id).value = defaults[id]; });
+    showTitleScore(true, grade());
+  });
+
+  showTitleScore(true, grade());
+})();
+</script>
+</body>
+</html>
